@@ -25,7 +25,7 @@ Sử dụng **Playwright + Python** để kiểm thử hệ thống Mượn sác
 | --- | ---- | --------- | ----------- |
 | 1   |      |           | Nhóm trưởng |
 | 2   | 2410601 | Nguyễn Hoàng Minh | Thành viên  |
-| 3   |      |           | Thành viên  |
+| 3   | 2410093 | Trần Mai Anh      | Thành viên  |
 | 4   |      |           | Thành viên  |
 
 ---
