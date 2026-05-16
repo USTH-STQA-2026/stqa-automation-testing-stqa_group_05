@@ -18,13 +18,13 @@ Sử dụng **Playwright + Python** để kiểm thử hệ thống Mượn sác
 
 |              | Thông tin                    |
 | ------------ | ---------------------------- |
-| **Tên nhóm** | `<!-- VD: Nhóm 1 -->`        |
-| **Lớp**      | `<!-- VD: SE001.P11 -->`     |
-| **Học kỳ**   | `<!-- VD: HK2 2025-2026 -->` |
+| **Tên nhóm** | STQA-GROUP-5           |
+| **Lớp**      | ICT1                |
+| **Học kỳ**   | HK2 2025-2026 |
 
 | #   | MSSV    | Họ và tên             | Vai trò     |
 | --- | ------- | --------------------- | ----------- |
-| 1   |         |                       | Nhóm trưởng |
+| 1   | 2410064 | Nguyễn Hoàng Anh      | Nhóm trưởng |
 | 2   | 2410601 | Nguyễn Hoàng Minh     | Thành viên  |
 | 3   | 2410093 | Trần Mai Anh          | Thành viên  |
 | 4   | 2410325 | Vũ Minh Hoàng         | Thành viên  |
