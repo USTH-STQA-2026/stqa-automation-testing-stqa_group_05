@@ -1,9 +1,9 @@
 """
-Login Tests — Kiểm thử Đăng nhập — Library Book Borrowing System
+Login Tests — Library Book Borrowing System
 
-📖 Textbook concepts in this file:
-   - RIPR Model (Ch.2): See [R], [I], [P], [R✓] comments in TC-01
-   - Data-Driven Testing / @parametrize (Ch.3 §3.3.2): See Bonus B2
+Textbook concepts in this file:
+  - RIPR Model (Ch.2): See [R], [I], [P], [R] comments in TC-01
+  - Data-Driven Testing / @parametrize (Ch.3 §3.3.2): See Bonus B2
 
 This file contains 1 completed example (TC-01).
 TC-02 and TC-03 completed by student.
@@ -20,30 +20,30 @@ from conftest import (
 
 
 def test_login_success(page, test_config):
-    """TC-01: Đăng nhập thành công với thông tin hợp lệ (Login success with valid credentials)
+    """TC-01: Successful login with valid credentials
 
-    ✅ COMPLETED — Use as a reference example.
+    COMPLETED — Use as a reference example.
 
-    📖 RIPR Model (Textbook Ch.2):
-        [R] Reachability  → Truy cập trang đăng nhập
-        [I] Infection     → Nhập dữ liệu hợp lệ
-        [P] Propagation   → Chờ UI cập nhật
-        [R✓] Revealability → Kiểm tra kết quả
+     RIPR Model (Textbook Ch.2):
+        [R] Reachability  → Navigate to the login page
+        [I] Infection     → Input valid credentials
+        [P] Propagation   → Wait for the UI to update
+        [R] Revealability → Verify the test result
     """
-    # [R] Reachability: Truy cập trang đăng nhập — chạm tới UI cần test
+    # [R] Reachability: Navigate to login page — reach target UI
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
 
-    # [I] Infection: Nhập dữ liệu hợp lệ — kích hoạt logic đăng nhập
+    # [I] Infection: Enter valid credentials — trigger login logic
     flutter_fill(page, "Email", test_config["email"])
     flutter_fill(page, "Mật khẩu", test_config["password"])
     flutter_click_button(page, "Đăng nhập")
 
-    # [P] Propagation: Chờ trạng thái lan truyền ra UI (Smart Wait)
+    # [P] Propagation: Wait for state to propagate to UI (Smart Wait)
     wait_for_flutter(page, text="Đăng xuất")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_success.png"))
 
-    # [R✓] Revealability: Kiểm tra kết quả — Test Oracle
+    # [R] Revealability: Verify test result — Test Oracle
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     has_user_name = test_config["display_name"] in sem_text
     has_logout = "Đăng xuất" in sem_text or "Logout" in sem_text
@@ -53,29 +53,29 @@ def test_login_success(page, test_config):
 
 
 def test_login_fail_wrong_password(page, test_config):
-    """TC-02: Đăng nhập thất bại — sai mật khẩu (Login fail — wrong password)
+    """TC-02: Failed login — wrong password
 
-    ✅ COMPLETED
-    📖 RIPR:
-        [R] Truy cập trang đăng nhập
-        [I] Nhập email đúng, mật khẩu SAI
-        [P] Hệ thống xử lý → lỗi lan truyền ra thông báo "Mật khẩu không đúng"
-        [R✓] Assert thông báo lỗi xuất hiện, KHÔNG có nút Đăng xuất
+    COMPLETED
+    RIPR:
+        [R] Navigate to the login page
+        [I] Enter valid email, but WRONG password
+        [P] System processes → error message "Mật khẩu không đúng" propagates to UI
+        [R] Assert error message is visible, and Logout button is NOT present
     """
-    # [R] Truy cập trang đăng nhập
+    # [R] Navigate to login page
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
 
-    # [I] Nhập email đúng, mật khẩu SAI
+    # [I] Enter valid email, WRONG password
     flutter_fill(page, "Email", test_config["email"])
     flutter_fill(page, "Mật khẩu", "sai_mat_khau_invalid_999")
     flutter_click_button(page, "Đăng nhập")
 
-    # [P] Chờ thông báo lỗi xuất hiện (Smart Wait)
+    # [P] Wait for the error message to appear (Smart Wait)
     wait_for_flutter(page, text="Mật khẩu không đúng")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_fail_wrong_password.png"))
 
-    # [R✓] Kiểm tra: có thông báo lỗi, KHÔNG đăng nhập thành công
+    # [R] Verify: error message is displayed, and login did NOT succeed
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     assert "Mật khẩu không đúng" in sem_text, (
         f"Expected error 'Mật khẩu không đúng' not found. Got: {sem_text[:200]}"
@@ -86,27 +86,27 @@ def test_login_fail_wrong_password(page, test_config):
 
 
 def test_login_fail_empty_fields(page, test_config):
-    """TC-03: Đăng nhập thất bại — để trống các trường (Login fail — empty fields)
+    """TC-03: Failed login — empty fields
 
-    ✅ COMPLETED
-    📖 RIPR:
-        [R] Truy cập trang đăng nhập
-        [I] KHÔNG nhập gì, click Đăng nhập → kích hoạt validation
-        [P] Hệ thống từ chối → thông báo "Vui lòng nhập email và mật khẩu"
-        [R✓] Assert thông báo lỗi xuất hiện, vẫn ở trang đăng nhập
+    COMPLETED
+    RIPR:
+        [R] Navigate to the login page
+        [I] Enter nothing, click Login → triggers validation
+        [P] System rejects → validation error "Vui lòng nhập email và mật khẩu"
+        [R] Assert error message appears, user remains on login page
     """
-    # [R] Truy cập trang đăng nhập
+    # [R] Navigate to login page
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
 
-    # [I] KHÔNG nhập gì — click Đăng nhập ngay
+    # [I] Enter nothing — click Login immediately
     flutter_click_button(page, "Đăng nhập")
 
-    # [P] Chờ thông báo lỗi (Smart Wait)
+    # [P] Wait for validation message (Smart Wait)
     wait_for_flutter(page, text="Vui lòng nhập")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_fail_empty_fields.png"))
 
-    # [R✓] Kiểm tra: thông báo lỗi hiện ra, không đăng nhập được
+    # [R] Verify: validation message is shown, user is not logged in
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     assert "Vui lòng nhập" in sem_text, (
         f"Expected validation error not found. Got: {sem_text[:200]}"
@@ -117,24 +117,23 @@ def test_login_fail_empty_fields(page, test_config):
 
 
 # ---------------------------------------------------------------------------
-# 🎁 BONUS B2 — Data-Driven Testing (@pytest.mark.parametrize)
-# Gộp nhiều kịch bản đăng nhập thất bại vào 1 hàm test
-# Textbook Ch.3 §3.3.2: Data-driven testing tăng coverage với ít code hơn
+# BONUS B2 — Data-Driven Testing (@pytest.mark.parametrize)
+# Combine multiple failed login scenarios into a single test function
+# Textbook Ch.3 §3.3.2: Data-driven testing increases coverage with less code
 # ---------------------------------------------------------------------------
 
 @pytest.mark.parametrize("email, password, expected_error, tc_id", [
-    # Sai mật khẩu
+    # Incorrect password
     ("ba.nguyen@email.com", "sai_mat_khau_invalid", "Mật khẩu không đúng", "TC-02b"),
-    # Bỏ trống cả hai
+    # Both fields empty
     ("", "", "Vui lòng nhập", "TC-03b"),
-    # Email không tồn tại trong hệ thống
+    # Email does not exist in system
     ("nobody@test.com", "password123", "Không tìm thấy", "TC-Login-Extra"),
 ])
 def test_login_fail_parametrized(page, test_config, email, password, expected_error, tc_id):
-    """BONUS B2 — Data-Driven: nhiều kịch bản đăng nhập thất bại
+    """BONUS B2 — Data-Driven: multiple failed login scenarios
 
-    Kiểm thử hướng dữ liệu: cùng một flow test nhưng với các bộ dữ liệu khác nhau.
-    (Data-driven testing: same test flow with different input datasets.)
+    Data-driven testing: execute the same test flow with different input datasets.
     """
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
@@ -145,7 +144,7 @@ def test_login_fail_parametrized(page, test_config, email, password, expected_er
         flutter_fill(page, "Mật khẩu", password)
     flutter_click_button(page, "Đăng nhập")
 
-    # Chờ thông báo lỗi
+    # Wait for expected error message
     wait_for_flutter(page, text=expected_error)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, f"login_fail_{tc_id}.png"))
 
@@ -157,15 +156,15 @@ def test_login_fail_parametrized(page, test_config, email, password, expected_er
 
 
 # ---------------------------------------------------------------------------
-# 🎁 BONUS B1 — Extra TC: Đăng nhập Thủ thư
-# Kiểm tra vai trò Thủ thư có đặc quyền (thấy tab Thành viên — REQ-07)
+# BONUS B1 — Extra TC: Librarian login
+# Verify librarian role privilege (sees the 'Thành viên' member management tab — REQ-07)
 # ---------------------------------------------------------------------------
 
 def test_login_as_librarian(page, test_config):
-    """BONUS TC-Extra-01: Đăng nhập với vai trò Thủ thư (Login as Librarian)
+    """BONUS TC-Extra-01: Login as Librarian
 
-    Kiểm tra tài khoản Thủ thư đăng nhập thành công và thấy tab Thành viên
-    (chức năng chỉ Thủ thư mới có — REQ-07).
+    Verify that a Librarian account can successfully log in and see the "Thành viên" tab
+    (a privilege exclusive to Librarians — REQ-07).
     """
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
@@ -178,7 +177,7 @@ def test_login_as_librarian(page, test_config):
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_librarian.png"))
 
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
-    # Thủ thư phải thấy tab "Thành viên" — Thành viên bình thường không thấy
+    # Librarian must see the "Thành viên" tab — normal members should not
     assert "Thành viên" in sem_text, (
         "Librarian should see the 'Thành viên' tab (REQ-07)"
     )

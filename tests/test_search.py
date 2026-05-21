@@ -1,12 +1,12 @@
 """
-Search & Filter Tests — Kiểm thử Tìm kiếm & Lọc sách — Library Book Borrowing System
+Search & Filter Tests — Library Book Borrowing System
 
-TC-04 đến TC-07 — ĐÃ HOÀN THÀNH.
+TC-04 to TC-07 — COMPLETED.
 
-Key selectors cho Flutter Web:
-    - Ô tìm kiếm  : aria-label = "Tìm kiếm theo tên sách hoặc tác giả..."
-    - Ô lọc       : aria-label = "Lọc theo thể loại (VD: Công nghệ, Kinh tế...)"
-    - Card sách   : flt-semantics[role="group"][aria-label*="Mã: BOOK"]
+Key selectors for Flutter Web:
+    - Search input : aria-label = "Tìm kiếm theo tên sách hoặc tác giả..."
+    - Filter dropdown: aria-label = "Lọc theo thể loại (VD: Công nghệ, Kinh tế...)"
+    - Book card    : flt-semantics[role="group"][aria-label*="Mã: BOOK"]
 """
 import os
 import pytest
@@ -21,28 +21,28 @@ from conftest import (
 
 
 def test_search_book_by_name(page, test_config):
-    """TC-04: Tìm kiếm sách theo tên — có kết quả (Search book by name — results found)
+    """TC-04: Search book by name — results found
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → tìm "Flutter" → kiểm tra BOOK001 xuất hiện.
+    COMPLETED
+    Flow: Log in → search for "Flutter" → verify BOOK001 appears.
 
-    📖 RIPR:
-        [R] Đăng nhập, vào tab Sách
-        [I] Nhập "Flutter" vào ô tìm kiếm
-        [P] Hệ thống lọc danh sách theo từ khóa
-        [R✓] Assert có sách chứa "Flutter" trong kết quả
+    RIPR:
+        [R] Log in, navigate to Books tab
+        [I] Enter "Flutter" into the search bar
+        [P] System filters the list based on the search query
+        [R] Assert books containing "Flutter" are displayed in results
     """
-    # Arrange: Đăng nhập
+    # Arrange: Log in
     login(page, test_config)
 
-    # Act: Nhập từ khóa tìm kiếm
+    # Act: Input search query
     flutter_fill(page, "Tìm kiếm theo tên sách hoặc tác giả...", "Flutter")
 
-    # Smart Wait: chờ kết quả hiển thị
+    # Smart Wait: wait for the results to load
     wait_for_flutter(page, text="Flutter")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "search_by_name_flutter.png"))
 
-    # Assert: có ít nhất 1 sách chứa "Flutter" trong kết quả
+    # Assert: at least 1 book containing "Flutter" is displayed
     results = page.locator('flt-semantics[aria-label*="Flutter"]')
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     assert results.count() > 0 or "Flutter" in sem_text, (
@@ -51,32 +51,32 @@ def test_search_book_by_name(page, test_config):
 
 
 def test_search_book_no_result(page, test_config):
-    """TC-05: Tìm kiếm sách — không có kết quả (Search book — no results)
+    """TC-05: Search book — no results
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → tìm từ khóa không tồn tại → kiểm tra thông báo 'Không tìm thấy'.
+    COMPLETED
+    Flow: Log in → search non-existent keyword → verify 'Không tìm thấy' (Not found) message.
 
-    📖 RIPR:
-        [R] Đăng nhập, vào tab Sách
-        [I] Nhập từ khóa "xyz_khong_ton_tai_12345" không có trong DB
-        [P] Hệ thống trả về kết quả rỗng
-        [R✓] Assert không có thẻ sách nào hiển thị hoặc có thông báo 'Không tìm thấy'
+    RIPR:
+        [R] Log in, navigate to Books tab
+        [I] Enter non-existent keyword "xyz_khong_ton_tai_12345"
+        [P] System returns an empty results set
+        [R] Assert no book cards are shown or 'Không tìm thấy' message is displayed
     """
-    # Arrange: Đăng nhập
+    # Arrange: Log in
     login(page, test_config)
 
-    # Act: Nhập từ khóa không tồn tại
+    # Act: Enter non-existent keyword
     flutter_fill(
         page,
         "Tìm kiếm theo tên sách hoặc tác giả...",
         "xyz_khong_ton_tai_12345",
     )
 
-    # Smart Wait: chờ hệ thống xử lý
+    # Smart Wait: wait for system to process
     wait_for_flutter(page, text="Không tìm thấy")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "search_no_result.png"))
 
-    # Assert: không có thẻ sách nào, hoặc có thông báo "Không tìm thấy"
+    # Assert: no book cards shown, or "Không tìm thấy" message is displayed
     book_cards = page.locator('flt-semantics[role="group"][aria-label*="Mã: BOOK"]')
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     has_no_books = book_cards.count() == 0
@@ -88,32 +88,32 @@ def test_search_book_no_result(page, test_config):
 
 
 def test_filter_by_category(page, test_config):
-    """TC-06: Lọc sách theo thể loại 'Công nghệ' (Filter books by category)
+    """TC-06: Filter books by category
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → lọc "Công nghệ" → tất cả sách hiển thị phải thuộc thể loại đó.
+    COMPLETED
+    Flow: Log in → filter by "Công nghệ" (Technology) → verify all shown books belong to that category.
 
-    📖 RIPR:
-        [R] Đăng nhập, vào tab Sách
-        [I] Nhập "Công nghệ" vào ô lọc thể loại
-        [P] Hệ thống lọc chỉ hiển thị sách Công nghệ
-        [R✓] Assert tất cả thẻ sách hiển thị đều chứa "Công nghệ" trong aria-label
+    RIPR:
+        [R] Log in, navigate to Books tab
+        [I] Enter "Công nghệ" into the category filter dropdown
+        [P] System filters the list to only display Technology books
+        [R] Assert all displayed book cards contain "Công nghệ" in their aria-label
     """
-    # Arrange: Đăng nhập
+    # Arrange: Log in
     login(page, test_config)
 
-    # Act: Nhập thể loại cần lọc
+    # Act: Enter category to filter
     flutter_fill(
         page,
         "Lọc theo thể loại (VD: Công nghệ, Kinh tế...)",
         "Công nghệ",
     )
 
-    # Smart Wait: chờ danh sách cập nhật
+    # Smart Wait: wait for the list to update
     wait_for_flutter(page, text="Công nghệ")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "filter_by_category_cong_nghe.png"))
 
-    # Assert: tất cả thẻ sách hiển thị đều thuộc "Công nghệ"
+    # Assert: all displayed book cards belong to "Công nghệ"
     book_cards = page.locator('flt-semantics[role="group"][aria-label*="Mã: BOOK"]')
     count = book_cards.count()
     assert count > 0, "No books found after filtering by 'Công nghệ'"
@@ -127,32 +127,32 @@ def test_filter_by_category(page, test_config):
 
 
 def test_search_by_author(page, test_config):
-    """TC-07: Tìm kiếm sách theo tên tác giả (Search book by author name)
+    """TC-07: Search book by author name
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → tìm "Nguyễn Minh Đức" → kiểm tra có sách của tác giả đó.
+    COMPLETED
+    Flow: Log in → search for "Nguyễn Minh Đức" → verify books by that author are shown.
 
-    📖 RIPR:
-        [R] Đăng nhập, vào tab Sách
-        [I] Nhập tên tác giả "Nguyễn Minh Đức" vào ô tìm kiếm
-        [P] Hệ thống lọc danh sách theo tên tác giả
-        [R✓] Assert có sách của tác giả "Nguyễn Minh Đức" trong kết quả
+    RIPR:
+        [R] Log in, navigate to Books tab
+        [I] Enter author name "Nguyễn Minh Đức" into search input
+        [P] System filters books list by author name
+        [R] Assert books by "Nguyễn Minh Đức" are in the results
     """
-    # Arrange: Đăng nhập
+    # Arrange: Log in
     login(page, test_config)
 
-    # Act: Tìm kiếm theo tên tác giả
+    # Act: Search by author name
     flutter_fill(
         page,
         "Tìm kiếm theo tên sách hoặc tác giả...",
         "Nguyễn Minh Đức",
     )
 
-    # Smart Wait: chờ kết quả hiển thị
+    # Smart Wait: wait for results to load
     wait_for_flutter(page, text="Nguyễn Minh Đức")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "search_by_author.png"))
 
-    # Assert: có ít nhất 1 sách của tác giả "Nguyễn Minh Đức"
+    # Assert: at least 1 book by "Nguyễn Minh Đức" is displayed
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     results = page.locator('flt-semantics[aria-label*="Nguyễn Minh Đức"]')
     assert results.count() > 0 or "Nguyễn Minh Đức" in sem_text, (
@@ -161,19 +161,19 @@ def test_search_by_author(page, test_config):
 
 
 # ---------------------------------------------------------------------------
-# 🎁 BONUS B1 — Extra TC: Tìm kiếm không phân biệt HOA/thường
-# REQ-03 yêu cầu tìm kiếm case-insensitive
+# BONUS B1 — Extra TC: Case-insensitive search
+# REQ-03 requires search to be case-insensitive
 # ---------------------------------------------------------------------------
 
 def test_search_case_insensitive(page, test_config):
-    """BONUS TC-Extra-02: Tìm kiếm không phân biệt HOA/thường (Case-insensitive search)
+    """BONUS TC-Extra-02: Case-insensitive search
 
-    REQ-03: Tìm kiếm KHÔNG phân biệt chữ hoa/thường (case-insensitive).
-    Kết quả tìm 'FLUTTER' phải giống kết quả tìm 'Flutter'.
+    REQ-03: Search must be case-insensitive.
+    Searching for 'FLUTTER' should yield the same results as searching for 'Flutter'.
     """
     login(page, test_config)
 
-    # Tìm bằng chữ HOA
+    # Search using uppercase characters
     flutter_fill(page, "Tìm kiếm theo tên sách hoặc tác giả...", "FLUTTER")
     wait_for_flutter(page, text="Flutter")
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "search_case_insensitive.png"))

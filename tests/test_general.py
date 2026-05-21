@@ -1,13 +1,13 @@
 """
-Logout & Language Tests — Kiểm thử Đăng xuất & Chuyển ngôn ngữ — Library Book Borrowing System
+Logout & Language Tests — Library Book Borrowing System
 
-TC-11 và TC-12 — ĐÃ HOÀN THÀNH.
+TC-11 and TC-12 — COMPLETED.
 
 Key selectors:
-    - Nút Đăng xuất : flt-semantics[role="button"]:has-text("Đăng xuất")
-    - Nút EN        : flt-semantics[role="button"]:has-text("EN")
-    - Sau đăng xuất : "Đăng nhập" button và "Email" input xuất hiện lại
-    - Sau chuyển EN : "Logout", "Borrow", "Library", "Books" xuất hiện
+    - Logout button : flt-semantics[role="button"]:has-text("Đăng xuất")
+    - EN button     : flt-semantics[role="button"]:has-text("EN")
+    - Post-logout   : "Đăng nhập" button and "Email" input field reappear
+    - Post-language : "Logout", "Borrow", "Library", "Books" text appear
 """
 import os
 import pytest
@@ -22,29 +22,29 @@ from conftest import (
 
 
 def test_logout(page, test_config):
-    """TC-11: Đăng xuất thành công (Logout success)
+    """TC-11: Logout success
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → click 'Đăng xuất' → kiểm tra quay về trang đăng nhập.
+    COMPLETED
+    Flow: Log in → click 'Đăng xuất' (Logout) → verify redirected back to login page.
 
-    📖 RIPR:
-        [R] Đăng nhập thành công (trạng thái: đã đăng nhập)
-        [I] Click nút 'Đăng xuất'
-        [P] Hệ thống đăng xuất, chuyển về trang login
-        [R✓] Assert: có nút 'Đăng nhập' và ô nhập 'Email', KHÔNG có nút 'Đăng xuất'
+    RIPR:
+        [R] Log in successfully (status: authenticated)
+        [I] Click the 'Đăng xuất' button
+        [P] System signs out, redirects back to login page
+        [R] Assert: 'Đăng nhập' button and 'Email' input are shown, 'Đăng xuất' is NOT present
     """
-    # [R] Arrange: Đăng nhập
+    # [R] Arrange: Log in
     login(page, test_config)
 
-    # [I] Act: Click nút "Đăng xuất"
+    # [I] Act: Click the "Đăng xuất" button
     flutter_click_button(page, "Đăng xuất")
 
-    # [P] Chờ trang login hiển thị lại (Smart Wait)
+    # [P] Wait for login page to render again (Smart Wait)
     wait_for_flutter(page, text="Đăng nhập")
     enable_flutter_semantics(page)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "logout_success.png"))
 
-    # [R✓] Assert: quay về trang đăng nhập
+    # [R] Assert: back on the login page
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     has_login_button = "Đăng nhập" in sem_text
     has_email_input = page.locator('input[aria-label="Email"]').count() > 0
@@ -52,36 +52,36 @@ def test_logout(page, test_config):
         "Should be back on login page after logout — "
         "expected 'Đăng nhập' button or Email input field"
     )
-    # Bonus B3: Kiểm tra chi tiết — không có nút Đăng xuất nữa
+    # Bonus B3: Detailed verification — Logout button must no longer exist
     assert "Đăng xuất" not in sem_text, (
         "Logout button should NOT be present after logging out"
     )
 
 
 def test_switch_language_to_english(page, test_config):
-    """TC-12: Chuyển ngôn ngữ sang tiếng Anh (Switch language to English)
+    """TC-12: Switch language to English
 
-    ✅ COMPLETED
-    Flow: Đăng nhập → click 'EN' → kiểm tra giao diện hiển thị tiếng Anh.
+    COMPLETED
+    Flow: Log in → click 'EN' → verify UI elements display in English.
 
-    📖 RIPR:
-        [R] Đăng nhập, trang chủ hiển thị tiếng Việt
-        [I] Click nút 'EN'
-        [P] Hệ thống đổi ngôn ngữ, re-render giao diện bằng tiếng Anh
-        [R✓] Assert: có text tiếng Anh ('Logout', 'Borrow', 'Library', 'Books')
+    RIPR:
+        [R] Log in, home page displays in Vietnamese by default
+        [I] Click the 'EN' button
+        [P] System switches language, re-renders the UI in English
+        [R] Assert: English keywords ('Logout', 'Borrow', 'Library', 'Books') are displayed
     """
-    # [R] Arrange: Đăng nhập
+    # [R] Arrange: Log in
     login(page, test_config)
 
-    # [I] Act: Click nút chuyển ngôn ngữ "EN"
+    # [I] Act: Click the "EN" language switch button
     flutter_click_button(page, "EN")
 
-    # [P] Chờ giao diện re-render sang tiếng Anh (Smart Wait)
+    # [P] Wait for the interface to re-render in English (Smart Wait)
     wait_for_flutter(page, text="Logout")
     enable_flutter_semantics(page)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "language_switched_to_english.png"))
 
-    # [R✓] Assert: giao diện đã chuyển sang tiếng Anh
+    # [R] Assert: UI has successfully switched to English
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     english_keywords = ["Logout", "Borrow", "Library", "Books", "Return"]
     has_english = any(keyword in sem_text for keyword in english_keywords)
@@ -90,7 +90,7 @@ def test_switch_language_to_english(page, test_config):
         f"Expected one of {english_keywords} in semantics. "
         f"Got: {sem_text[:300]}"
     )
-    # Bonus B3: Kiểm tra chi tiết — không còn text Việt nữa
+    # Bonus B3: Detailed verification — Vietnamese label is replaced
     assert "Đăng xuất" not in sem_text, (
         "Vietnamese 'Đăng xuất' should be replaced by English 'Logout'"
     )
