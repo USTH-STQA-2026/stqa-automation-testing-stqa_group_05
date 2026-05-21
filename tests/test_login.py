@@ -163,8 +163,12 @@ def test_login_fail_parametrized(page, test_config, email, password, expected_er
 def test_login_as_librarian(page, test_config):
     """BONUS TC-Extra-01: Login as Librarian
 
-    Verify that a Librarian account can successfully log in and see the "Thành viên" tab
-    (a privilege exclusive to Librarians — REQ-07).
+    Verify that a Librarian account can successfully log in and see Librarian-exclusive
+    action buttons: "Thêm thành viên" and "Đặt lại dữ liệu" (privileges for Librarians — REQ-07).
+
+    Note: The UI does NOT show a standalone "Thành viên" tab label — instead it shows
+    action buttons "Thêm thành viên" (Add member) and "Đặt lại dữ liệu" (Reset data)
+    that are exclusive to the Librarian role.
     """
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
@@ -177,8 +181,11 @@ def test_login_as_librarian(page, test_config):
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_librarian.png"))
 
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
-    # Librarian must see the "Thành viên" tab — normal members should not
-    assert "Thành viên" in sem_text, (
-        "Librarian should see the 'Thành viên' tab (REQ-07)"
+    # Librarian must see exclusive action buttons — REQ-07 privilege check
+    # UI shows "Thêm thành viên" (Add member) and "Đặt lại dữ liệu" (Reset data)
+    # These buttons are NOT available to regular members (Thành viên role)
+    assert "Thêm thành viên" in sem_text or "Đặt lại dữ liệu" in sem_text, (
+        "Librarian should see privileged action buttons "
+        "('Thêm thành viên' or 'Đặt lại dữ liệu') — REQ-07"
     )
     assert "Đăng xuất" in sem_text, "Librarian login should succeed"

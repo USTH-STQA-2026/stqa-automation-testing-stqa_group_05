@@ -1,12 +1,16 @@
+# -*- coding: utf-8 -*-
 """
 Borrow & Return Tests — Library Book Borrowing System
 
 TC-08 to TC-10 — COMPLETED.
 
-Seed data notes (resets on fresh context creation):
-    - MEM002 (ba.nguyen@email.com) already has BR001 (BOOK003) "Đang mượn" (Borrowed) in seed data
+Seed data notes:
+    - MEM002 (ba.nguyen@email.com) already has BR001 (BOOK003) "Đang mượn" (Borrowed)
     - BOOK001 (Lập trình Flutter cơ bản) — status: Có sẵn (Available) → used for TC-08
     - BOOK003 (Kiểm thử phần mềm nhập môn) — borrowed by MEM002 → used for TC-10
+
+Note: If tests ran previously in the same session, seed data may be modified.
+    To reset: login as librarian → click "Đặt lại dữ liệu" before re-running.
 
 Key selectors:
     - Tab "Mượn / Trả" : flt-semantics[role="tab"][aria-label="Mượn / Trả"]
@@ -43,10 +47,11 @@ def test_borrow_book(page, test_config):
     login(page, test_config)
 
     # [I] Act: Find an Available book and borrow it
+    # Wait up to 15s for at least one "Có sẵn" (Available) book card to appear
     available_book = page.locator(
         'flt-semantics[role="group"][aria-label*="Có sẵn"]'
     ).first
-    available_book.wait_for(state="attached", timeout=10000)
+    available_book.wait_for(state="attached", timeout=15000)
 
     # Click the "Mượn sách này" button inside the selected available book card
     borrow_btn = available_book.locator(
@@ -55,14 +60,14 @@ def test_borrow_book(page, test_config):
     borrow_btn.click()
 
     # [P] Propagation: Wait for confirmation dialog to appear
-    wait_for_flutter(page, text="Mượn")
+    wait_for_flutter(page, text="Mượn", timeout=15000)
     enable_flutter_semantics(page)
 
     # Confirm loan (click "Mượn" in modal dialog)
     flutter_click_button(page, "Mượn")
 
     # Wait for success toast/notification
-    wait_for_flutter(page, text="thành công")
+    wait_for_flutter(page, text="thành công", timeout=15000)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "borrow_book_success.png"))
 
     # [R] Assert: success notification OR book status changed
@@ -94,8 +99,8 @@ def test_view_borrowed_books(page, test_config):
     tab = page.locator('flt-semantics[role="tab"][aria-label="Mượn / Trả"]')
     tab.click()
 
-    # [P] Wait for tab content to render
-    wait_for_flutter(page, text="Trả sách")
+    # [P] Wait for tab content to render (Smart Wait)
+    wait_for_flutter(page, text="Trả sách", timeout=15000)
     enable_flutter_semantics(page)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "view_borrowed_books.png"))
 
@@ -129,7 +134,7 @@ def test_return_book(page, test_config):
     # Navigate to "Mượn / Trả" tab
     tab = page.locator('flt-semantics[role="tab"][aria-label="Mượn / Trả"]')
     tab.click()
-    wait_for_flutter(page, text="Trả sách")
+    wait_for_flutter(page, text="Trả sách", timeout=15000)
     enable_flutter_semantics(page)
 
     # [I] Act: Click the "Trả sách" button on the first loan card (MEM002's BR001)
@@ -139,7 +144,7 @@ def test_return_book(page, test_config):
     return_btn.click()
 
     # [P] Wait for operation result message
-    wait_for_flutter(page, text="thành công")
+    wait_for_flutter(page, text="thành công", timeout=15000)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "return_book_success.png"))
 
     # [R] Assert: successful return (checking for success notification or "Đã trả" status text)

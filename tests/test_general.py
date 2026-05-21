@@ -7,7 +7,7 @@ Key selectors:
     - Logout button : flt-semantics[role="button"]:has-text("Đăng xuất")
     - EN button     : flt-semantics[role="button"]:has-text("EN")
     - Post-logout   : "Đăng nhập" button and "Email" input field reappear
-    - Post-language : "Logout", "Borrow", "Library", "Books" text appear
+    - Post-language : "Sign out", "Borrow this book", "Library", "Member" text appear
 """
 import os
 import pytest
@@ -67,30 +67,46 @@ def test_switch_language_to_english(page, test_config):
     RIPR:
         [R] Log in, home page displays in Vietnamese by default
         [I] Click the 'EN' button
-        [P] System switches language, re-renders the UI in English
-        [R] Assert: English keywords ('Logout', 'Borrow', 'Library', 'Books') are displayed
+        [P] System switches language — Flutter rebuilds the widget tree synchronously
+        [R] Assert: English keywords ('Sign out', 'Borrow this book', 'Library') are
+            displayed and Vietnamese labels ('Đăng xuất') are gone
+
+    INVESTIGATION NOTE (why previous test was FAIL):
+        Root cause was a WRONG ASSERTION — the test waited for "Logout" which is NOT the
+        actual English translation used by this app. Diagnostic script confirmed:
+        - After clicking EN, flt-semantics updates IMMEDIATELY (no delay)
+        - The actual English button label is "Sign out" (not "Logout")
+        - The app also uses "Borrow this book", "Member", "Code", "Borrowed"
+        This is NOT a system bug — it was a test oracle error in the original code.
     """
     # [R] Arrange: Log in
     login(page, test_config)
 
+    # Verify we start in Vietnamese (pre-condition check — Bonus B3)
+    sem_vi = " ".join(page.locator("flt-semantics").all_text_contents())
+    assert "Đăng xuất" in sem_vi, "Pre-condition: UI should start in Vietnamese"
+
     # [I] Act: Click the "EN" language switch button
     flutter_click_button(page, "EN")
 
-    # [P] Wait for the interface to re-render in English (Smart Wait)
-    wait_for_flutter(page, text="Logout")
-    enable_flutter_semantics(page)
+    # [P] Smart Wait: the semantics tree updates synchronously with Flutter widget rebuild.
+    # The actual English label for "Đăng xuất" is "Sign out" in this application.
+    wait_for_flutter(page, text="Sign out", timeout=10000)
     page.screenshot(path=os.path.join(SCREENSHOT_DIR, "language_switched_to_english.png"))
 
     # [R] Assert: UI has successfully switched to English
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
-    english_keywords = ["Logout", "Borrow", "Library", "Books", "Return"]
+
+    # English keywords actually present in the app after language switch
+    # (verified via diagnostic script — NOT assumed)
+    english_keywords = ["Sign out", "Borrow this book", "Library", "Member", "Code"]
     has_english = any(keyword in sem_text for keyword in english_keywords)
     assert has_english, (
         f"UI did not switch to English. "
         f"Expected one of {english_keywords} in semantics. "
         f"Got: {sem_text[:300]}"
     )
-    # Bonus B3: Detailed verification — Vietnamese label is replaced
+    # Bonus B3: Detailed negative verification — Vietnamese labels must be gone
     assert "Đăng xuất" not in sem_text, (
-        "Vietnamese 'Đăng xuất' should be replaced by English 'Logout'"
+        "Vietnamese 'Đăng xuất' should be replaced by English 'Sign out' after language switch"
     )
