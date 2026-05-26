@@ -9,15 +9,15 @@ Key selectors:
     - Post-logout   : "Đăng nhập" button and "Email" input field reappear
     - Post-language : "Sign out", "Borrow this book", "Library", "Member" text appear
 """
+
 import os
-import pytest
+
 from conftest import (
-    enable_flutter_semantics,
-    flutter_fill,
-    flutter_click_button,
-    wait_for_flutter,
-    login,
     SCREENSHOT_DIR,
+    enable_flutter_semantics,
+    flutter_click_button,
+    login,
+    wait_for_flutter,
 )
 
 
@@ -92,7 +92,9 @@ def test_switch_language_to_english(page, test_config):
     # [P] Smart Wait: the semantics tree updates synchronously with Flutter widget rebuild.
     # The actual English label for "Đăng xuất" is "Sign out" in this application.
     wait_for_flutter(page, text="Sign out", timeout=10000)
-    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "language_switched_to_english.png"))
+    page.screenshot(
+        path=os.path.join(SCREENSHOT_DIR, "language_switched_to_english.png")
+    )
 
     # [R] Assert: UI has successfully switched to English
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())

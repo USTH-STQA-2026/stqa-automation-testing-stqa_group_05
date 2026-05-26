@@ -8,16 +8,10 @@ Key selectors for Flutter Web:
     - Filter dropdown: aria-label = "Lọc theo thể loại (VD: Công nghệ, Kinh tế...)"
     - Book card    : flt-semantics[role="group"][aria-label*="Mã: BOOK"]
 """
+
 import os
-import pytest
-from conftest import (
-    enable_flutter_semantics,
-    flutter_fill,
-    flutter_click_button,
-    wait_for_flutter,
-    login,
-    SCREENSHOT_DIR,
-)
+
+from conftest import SCREENSHOT_DIR, flutter_fill, login, wait_for_flutter
 
 
 def test_search_book_by_name(page, test_config):
@@ -111,7 +105,9 @@ def test_filter_by_category(page, test_config):
 
     # Smart Wait: wait for the list to update
     wait_for_flutter(page, text="Công nghệ")
-    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "filter_by_category_cong_nghe.png"))
+    page.screenshot(
+        path=os.path.join(SCREENSHOT_DIR, "filter_by_category_cong_nghe.png")
+    )
 
     # Assert: all displayed book cards belong to "Công nghệ"
     book_cards = page.locator('flt-semantics[role="group"][aria-label*="Mã: BOOK"]')
@@ -121,8 +117,7 @@ def test_filter_by_category(page, test_config):
     for i in range(count):
         label = book_cards.nth(i).get_attribute("aria-label") or ""
         assert "Công nghệ" in label, (
-            f"Book at index {i} does NOT belong to 'Công nghệ'. "
-            f"aria-label: '{label}'"
+            f"Book at index {i} does NOT belong to 'Công nghệ'. aria-label: '{label}'"
         )
 
 
@@ -164,6 +159,7 @@ def test_search_by_author(page, test_config):
 # BONUS B1 — Extra TC: Case-insensitive search
 # REQ-03 requires search to be case-insensitive
 # ---------------------------------------------------------------------------
+
 
 def test_search_case_insensitive(page, test_config):
     """BONUS TC-Extra-02: Case-insensitive search
