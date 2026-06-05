@@ -1,5 +1,4 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/ZpUiBug-)
-
 # STQA Library Automation — Starter Template
 
 Bài tập thực hành **Kiểm thử Web UI tự động** cho môn **Kiểm thử và Đảm bảo chất lượng phần mềm (STQA)**.
@@ -168,9 +167,8 @@ CI sẽ thực hiện:
 2. Cài Playwright Chromium
 3. Chạy `pytest --junitxml=report.xml`
 4. Upload artifacts gồm:
-
-- `report.xml`
-- `screenshots/**`
+  - `report.xml`
+  - `screenshots/**`
 
 ### Cách xem kết quả CI
 
@@ -188,20 +186,23 @@ CI sẽ thực hiện:
 
 ## 📋 Danh sách Test Case / Test Case List
 
-| TC    | Mô tả                                                | File                    | Trạng thái |
-| ----- | ---------------------------------------------------- | ----------------------- | ---------- |
-| TC-01 | Đăng nhập thành công (*Login success*)               | `test_login.py`         | ✅ Mẫu      |
-| TC-02 | Đăng nhập thất bại — sai mật khẩu (*Wrong password*) | `test_login.py`         | 🔴 TODO     |
-| TC-03 | Đăng nhập thất bại — để trống (*Empty fields*)       | `test_login.py`         | 🔴 TODO     |
-| TC-04 | Tìm sách theo tên (*Search by name*)                 | `test_search.py`        | 🔴 TODO     |
-| TC-05 | Tìm sách — không có kết quả (*No result*)            | `test_search.py`        | 🔴 TODO     |
-| TC-06 | Lọc theo thể loại (*Filter by category*)             | `test_search.py`        | 🔴 TODO     |
-| TC-07 | Tìm theo tác giả (*Search by author*)                | `test_search.py`        | 🔴 TODO     |
-| TC-08 | Mượn sách (*Borrow a book*)                          | `test_borrow_return.py` | 🔴 TODO     |
-| TC-09 | Xem sách đang mượn (*View borrowed books*)           | `test_borrow_return.py` | 🔴 TODO     |
-| TC-10 | Trả sách (*Return a book*)                           | `test_borrow_return.py` | 🔴 TODO     |
-| TC-11 | Đăng xuất (*Logout*)                                 | `test_general.py`       | 🔴 TODO     |
-| TC-12 | Chuyển ngôn ngữ sang EN (*Switch language*)          | `test_general.py`       | 🔴 TODO     |
+| TC    | Description                                          | File                    | Status |
+| ----- | ---------------------------------------------------- | ----------------------- | ------ |
+| TC-01 | Đăng nhập thành công (*Login success*)               | `test_login.py`         | ✅ Completed |
+| TC-02 | Đăng nhập thất bại — sai mật khẩu (*Wrong password*) | `test_login.py`         | ✅ Completed |
+| TC-03 | Đăng nhập thất bại — để trống (*Empty fields*)       | `test_login.py`         | ✅ Completed |
+| TC-04 | Tìm sách theo tên (*Search by name*)                 | `test_search.py`        | ✅ Completed |
+| TC-05 | Tìm sách — không có kết quả (*No result*)            | `test_search.py`        | ✅ Completed |
+| TC-06 | Lọc theo thể loại (*Filter by category*)             | `test_search.py`        | ✅ Completed |
+| TC-07 | Tìm theo tác giả (*Search by author*)                | `test_search.py`        | ✅ Completed |
+| TC-08 | Mượn sách (*Borrow a book*)                          | `test_borrow_return.py` | ✅ Completed |
+| TC-09 | Xem sách đang mượn (*View borrowed books*)           | `test_borrow_return.py` | ✅ Completed |
+| TC-10 | Trả sách (*Return a book*)                           | `test_borrow_return.py` | ✅ Completed |
+| TC-11 | Đăng xuất (*Logout*)                                 | `test_general.py`       | ✅ Completed |
+| TC-12 | Chuyển ngôn ngữ sang EN (*Switch language*)          | `test_general.py`       | ✅ Completed |
+| TC-Bonus-01 | Đăng nhập Thủ thư — kiểm tra tab đặc quyền | `test_login.py` | ✅ Bonus B1 |
+| TC-Bonus-02 | Tìm kiếm không phân biệt HOA/thường | `test_search.py` | ✅ Bonus B1 |
+| TC-Bonus-B2 | Data-driven login fail (3 bộ dữ liệu) | `test_login.py` | ✅ Bonus B2 |
 
 **Yêu cầu:** Hoàn thành tất cả 11 test case còn lại (TC-02 → TC-12).
 
