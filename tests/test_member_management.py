@@ -11,17 +11,19 @@ Textbook concepts in this file:
   - Oracle Strength (Ch.14): Strong assertions on error validation messages
   - Regression Testing (Ch.13): Automating tests to detect verified bugs
 """
+
 import os
-import pytest
+
 from conftest import (
-    enable_flutter_semantics,
-    flutter_fill,
-    flutter_click_button,
-    wait_for_flutter,
     SCREENSHOT_DIR,
+    enable_flutter_semantics,
+    flutter_click_button,
+    flutter_fill,
+    wait_for_flutter,
 )
 
 
+# A helper to navigate to the Add Member screen as Librarian
 def go_to_add_member_screen(page, test_config):
     """Helper: Log in as Librarian and navigate to the Add Member form."""
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
@@ -78,6 +80,9 @@ def test_add_member_valid(page, test_config):
     assert "thành công" in sem_text or "successfully" in sem_text or "MEM" in sem_text, (
         f"Expected member to be created successfully. Got: {sem_text[:300]}"
     )
+    assert (
+        "thành công" in sem_text or "successfully" in sem_text or "MEM" in sem_text
+    ), f"Expected member to be added successfully. Got: {sem_text[:300]}"
 
 
 def test_add_member_invalid_email(page, test_config):

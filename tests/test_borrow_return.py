@@ -16,16 +16,17 @@ Seed data notes:
     - BOOK001 (Lập trình Flutter cơ bản) — status: Có sẵn (Available) → used for TC-08
     - BOOK003 (Kiểm thử phần mềm nhập môn) — borrowed by MEM002 → used for TC-10
 """
+
 import os
 import re
-import pytest
+
 from conftest import (
-    enable_flutter_semantics,
-    flutter_fill,
-    flutter_click_button,
-    wait_for_flutter,
-    login,
     SCREENSHOT_DIR,
+    enable_flutter_semantics,
+    flutter_click_button,
+    flutter_fill,
+    login,
+    wait_for_flutter,
 )
 
 
@@ -159,6 +160,7 @@ def test_return_book(page, test_config):
 # Bonus Test Cases (B1 - Verification of Manual Bugs)
 # ---------------------------------------------------------------------------
 
+
 def test_borrow_suspended_member(page, test_config):
     """Bonus B1: Suspended member cannot borrow books (BUG-04 / manual TC-15)
 
@@ -185,7 +187,9 @@ def test_borrow_suspended_member(page, test_config):
     # [I] Act: Click borrow button on first available book
     available_book = page.locator('flt-semantics[role="group"][aria-label*="Có sẵn"]').first
     available_book.wait_for(state="attached", timeout=15000)
-    borrow_btn = available_book.locator('flt-semantics[role="button"]:has-text("Mượn sách này")')
+    borrow_btn = available_book.locator(
+        'flt-semantics[role="button"]:has-text("Mượn sách này")'
+    )
     borrow_btn.click()
 
     wait_for_flutter(page, text="Mượn", timeout=15000)
@@ -229,10 +233,12 @@ def test_borrow_limit_exceeded(page, test_config):
     enable_flutter_semantics(page)
 
     # [I] Act: Borrow 3 books successfully first
-    for i in range(3):
+    for _ in range(3):
         available_book = page.locator('flt-semantics[role="group"][aria-label*="Có sẵn"]').first
         available_book.wait_for(state="attached", timeout=15000)
-        borrow_btn = available_book.locator('flt-semantics[role="button"]:has-text("Mượn sách này")')
+        borrow_btn = available_book.locator(
+            'flt-semantics[role="button"]:has-text("Mượn sách này")'
+        )
         borrow_btn.click()
 
         wait_for_flutter(page, text="Mượn", timeout=15000)
@@ -246,7 +252,9 @@ def test_borrow_limit_exceeded(page, test_config):
     # Attempt to borrow the 4th book
     available_book = page.locator('flt-semantics[role="group"][aria-label*="Có sẵn"]').first
     available_book.wait_for(state="attached", timeout=15000)
-    borrow_btn = available_book.locator('flt-semantics[role="button"]:has-text("Mượn sách này")')
+    borrow_btn = available_book.locator(
+        'flt-semantics[role="button"]:has-text("Mượn sách này")'
+    )
     borrow_btn.click()
 
     wait_for_flutter(page, text="Mượn", timeout=15000)
@@ -336,7 +344,9 @@ def test_return_other_member_book(page, test_config):
     # Attempt to click "Trả sách" on the retrieved slip
     sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
     if "Trả sách" in sem_text:
-        return_btn = page.locator('flt-semantics[role="button"]:has-text("Trả sách")').first
+        return_btn = page.locator(
+            'flt-semantics[role="button"]:has-text("Trả sách")'
+        ).first
         return_btn.click()
         try:
             wait_for_flutter(page, text="thành công", timeout=5000)
@@ -373,7 +383,9 @@ def test_unauthorized_slip_lookup(page, test_config):
     wait_for_flutter(page, text="Trả sách", timeout=15000)
     enable_flutter_semantics(page)
 
-    sub_tab = page.locator('flt-semantics[role="tab"][aria-label*="Tra cứu phiếu mượn"], flt-semantics:has-text("Tra cứu phiếu mượn")').first
+    sub_tab = page.locator(
+        'flt-semantics[role="tab"][aria-label*="Tra cứu phiếu mượn"], flt-semantics:has-text("Tra cứu phiếu mượn")'
+    ).first
     sub_tab.click()
     page.wait_for_timeout(2000)
     enable_flutter_semantics(page)
