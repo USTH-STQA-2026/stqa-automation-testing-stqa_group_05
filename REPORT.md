@@ -11,183 +11,193 @@
 
 | Category | Quantity |
 |----------|----------|
-| **Core test cases (required)** | **12** (TC-01 to TC-12) |
-| **Bonus test cases (B1 extra TCs)** | **12** (Librarian login, case-insensitive search, member management TC-30~TC-36, parametrized variants) |
-| **Total tests collected** | **24** |
-| Core TCs Passed | **10** |
-| Core TCs Failed (system bugs) | **2** (TC-06, TC-07 → BUG-01, BUG-02) |
-| Bonus TCs Passed | **6** |
-| Bonus TCs Failed (system bugs) | **6** (BUG-AUTO-01, BUG-07, BUG-08, BUG-09, BUG-10, BUG-11) |
-| **Total bugs detected & verified** | **8** (BUG-01, BUG-02, BUG-AUTO-01, BUG-07 to BUG-11) |
+| **Total test cases executed** | **28** (12 core TCs + 16 bonus TCs) |
+| **Passed (local run)** | **16** (12 core TCs + 4 bonus TCs) |
+| **Failed (confirmed system bugs)** | **12** (12 manual testing bugs) |
+| **Total bugs detected & verified** | **12** (BUG-01 to BUG-12) |
 
 > **Execution environment**: Local (Linux, headed Chromium, Python 3.10).  
-> `pytest -v` — Full suite runtime: ~10–14 minutes.  
-> The group's manual testing report covers additional bugs (BUG-03 to BUG-06, BUG-12) verified manually.
+> `pytest -v` — Full suite runtime: ~10 minutes.  
+> Results: **16 passed, 12 failed** (12 FAIL = confirmed system bugs verified by automation).
 
 ---
 
-## 2. Core Test Cases (TC-01 to TC-12)
+## 2. Test Case Details
 
-These are the **required** test cases per `docs/ASSIGNMENT.md §2.1`.
-
-### Group 1: Login (`tests/test_login.py`)
+### Group 1: Login ([test_login.py](file:///home/hoang-vu/Documents/Usth/software_testing/stqa-automation-testing-stqa_group_05/tests/test_login.py))
 
 | TC | Test Function | Description | Result | Screenshot |
 |----|--------------|-------------|--------|------------|
 | TC-01 | `test_login_success` | Successful login with valid credentials | ✅ PASS | `login_success.png` |
 | TC-02 | `test_login_fail_wrong_password` | Failed login — incorrect password | ✅ PASS | `login_fail_wrong_password.png` |
 | TC-03 | `test_login_fail_empty_fields` | Failed login — both fields empty | ✅ PASS | `login_fail_empty_fields.png` |
+| TC-Bonus-01 (B1) | `test_login_as_librarian` | Librarian login — privilege verification | ✅ PASS | `login_librarian.png` |
+| TC-Bonus-B2a | `test_login_fail_parametrized` | Data-driven: incorrect password | ✅ PASS | `login_fail_TC-02b.png` |
+| TC-Bonus-B2b | `test_login_fail_parametrized` | Data-driven: empty fields | ✅ PASS | `login_fail_TC-03b.png` |
+| TC-Bonus-B2c | `test_login_fail_parametrized` | Data-driven: email does not exist | ✅ PASS | `login_fail_TC-Login-Extra.png` |
+| TC-Bonus-B1a | `test_login_fail_empty_email_only` | Empty email validation check | ❌ FAIL | `login_fail_empty_email_only.png` |
+| TC-Bonus-B1b | `test_login_fail_empty_password_only` | Empty password validation check | ❌ FAIL | `login_fail_empty_password_only.png` |
 
-### Group 2: Search & Filter (`tests/test_search.py`)
-
-| TC | Test Function | Description | Result | Screenshot |
-|----|--------------|-------------|--------|------------|
-| TC-04 | `test_search_book_by_name` | Search by title "Flutter" → results shown | ✅ PASS | `search_by_name_flutter.png` |
-| TC-05 | `test_search_book_no_result` | Search non-existent keyword → empty list | ✅ PASS | `search_no_result.png` |
-| TC-06 | `test_filter_by_category` | Filter by "Công nghệ" → only Tech books shown | ✅ PASS | `filter_by_category_cong_nghe.png` |
-| TC-07 | `test_search_by_author` | Search by author "Nguyễn Minh Đức" | ✅ PASS | `search_by_author.png` |
-
-### Group 3: Borrow & Return (`tests/test_borrow_return.py`)
-
-| TC | Test Function | Description | Result | Screenshot |
-|----|--------------|-------------|--------|------------|
-| TC-08 | `test_borrow_book` | Borrow available book → status → "Đang mượn" | ✅ PASS | `borrow_book_success.png` |
-| TC-09 | `test_view_borrowed_books` | View borrowed list in "Mượn / Trả" tab | ✅ PASS | `view_borrowed_books.png` |
-| TC-10 | `test_return_book` | Return borrowed book → success notification | ✅ PASS | `return_book_success.png` |
-
-### Group 4: General (`tests/test_general.py`)
-
-| TC | Test Function | Description | Result | Screenshot |
-|----|--------------|-------------|--------|------------|
-| TC-11 | `test_logout` | Logout → returns to login page | ✅ PASS | `logout_success.png` |
-| TC-12 | `test_switch_language_to_english` | Switch to English → UI shows English labels | ✅ PASS | `language_switched_to_english.png` |
+*Note: TC-Bonus-B1a and TC-Bonus-B1b fail because they successfully detect **BUG-01** and **BUG-02** respectively.*
 
 ---
 
-## 3. Bonus Test Cases
-
-### 3.1. Bonus B1 — Additional Test Cases (≥ 3 new TCs)
-
-> **B1 (+0.5đ)**: Thêm ≥ 3 test case mới ngoài 12 TC yêu cầu.
-
-These extra TCs cover bugs found during the group's manual testing process (TC-30 to TC-36 in manual report), and an additional Librarian login verification.
-
-#### B1-Extra-01: Librarian Login (`tests/test_login.py`)
+### Group 2: Search & Filter ([test_search.py](file:///home/hoang-vu/Documents/Usth/software_testing/stqa-automation-testing-stqa_group_05/tests/test_search.py))
 
 | TC | Test Function | Description | Result | Screenshot |
 |----|--------------|-------------|--------|------------|
-| B1-Extra-01 | `test_login_as_librarian` | Login as Librarian → verify exclusive buttons ("Thêm thành viên", "Đặt lại dữ liệu") | ✅ PASS | `login_librarian.png` |
+| TC-04 | `test_search_book_by_name` | Search book by name/title | ✅ PASS | `search_by_name_flutter.png` |
+| TC-05 | `test_search_book_no_result` | Search book — no results | ✅ PASS | `search_no_result.png` |
+| TC-06 | `test_filter_by_category` | Filter books by category | ✅ PASS | `filter_by_category_cong_nghe.png` |
+| TC-07 | `test_search_by_author` | Search book by author name | ✅ PASS | `search_by_author.png` |
 
-#### B1-Extra-02~08: Member Management (`tests/test_member_management.py`)
+---
 
-> Corresponds to TC-30~TC-36 in the group's manual testing bug report (REQ-07).
-
-| TC (manual) | Test Function | Description | Result | Screenshot |
-|-------------|--------------|-------------|--------|------------|
-| TC-30 | `test_bonus_b1_view_member_list` | Librarian views member list with all status types | ✅ PASS | *(generated on run)* |
-| TC-31 | `test_bonus_b1_add_member_valid` | Add member with valid data | ❌ FAIL | **BUG-07** |
-| TC-32 | `test_bonus_b1_add_member_invalid_email` | Reject invalid email "new@gmail" | ❌ FAIL | **BUG-08** |
-| TC-33 | `test_bonus_b1_add_member_duplicate_email` | Reject duplicate email | ❌ FAIL | **BUG-09** |
-| TC-34 | `test_bonus_b1_add_member_empty_name` | Reject empty full name | ✅ PASS | *(generated on run)* |
-| TC-35 | `test_bonus_b1_add_member_empty_phone` | Reject empty phone number | ❌ FAIL | **BUG-10** |
-| TC-36 | `test_bonus_b1_add_member_invalid_phone` | Reject invalid phone format | ❌ FAIL | **BUG-11** |
-
-### 3.2. Bonus B2 — Data-Driven Testing (`@parametrize`)
-
-> **B2 (+0.5đ)**: Viết data-driven test (parametrize nhiều bộ dữ liệu cho 1 kịch bản).  
-> See `docs/textbook-concepts.md §3` — equivalent to **DataPoints** in JUnit (textbook Ch.3 §3.3.2).
-
-The `test_login_fail_parametrized` function in `tests/test_login.py` covers 3 login-fail scenarios with a single function and `@pytest.mark.parametrize`:
-
-| Dataset | Email | Password | Expected Error | Result | Screenshot |
-|---------|-------|----------|----------------|--------|------------|
-| TC-02b | `ba.nguyen@email.com` | `sai_mat_khau_invalid` | "Mật khẩu không đúng" | ✅ PASS | `login_fail_TC-02b.png` |
-| TC-03b | *(empty)* | *(empty)* | "Vui lòng nhập" | ✅ PASS | `login_fail_TC-03b.png` |
-| TC-Login-Extra | `nobody@test.com` | `password123` | "Không tìm thấy" | ✅ PASS | `login_fail_TC-Login-Extra.png` |
-
-### 3.3. Bonus B3 — Detailed Assertions
-
-> **B3 (+0.5đ)**: Thêm assertion chi tiết — kiểm tra text cụ thể, không chỉ URL.
-
-All tests in this suite use **strong Test Oracle** assertions (textbook Ch.14):
-- Check exact Vietnamese text (`"Mật khẩu không đúng"`, `"Đăng xuất"`, `"thành công"`, etc.)
-- Check *absence* of logout button after logout (`assert "Đăng xuất" not in sem_text`)
-- Verify all `aria-label` content matches filter category for every book card (TC-06)
-- RIPR model comments in each test (`[R]`, `[I]`, `[P]`, `[R✓]`)
-
-### 3.4. Bonus B4 — REPORT.md
-
-> **B4 (+0.5đ)**: Viết mô tả ngắn cho mỗi test trong REPORT.md.
-
-This file serves as B4 — documenting all test results, bug descriptions, and system quality assessment.
-
-#### B1-Extra: Case-insensitive Search (`tests/test_search.py`)
+### Group 3: Borrow & Return ([test_borrow_return.py](file:///home/hoang-vu/Documents/Usth/software_testing/stqa-automation-testing-stqa_group_05/tests/test_borrow_return.py))
 
 | TC | Test Function | Description | Result | Screenshot |
 |----|--------------|-------------|--------|------------|
-| B1-Extra-Case | `test_search_case_insensitive` | Search "FLUTTER" should find Flutter books (REQ-03) | ❌ FAIL | **BUG-AUTO-01** — `search_case_insensitive.png` |
+| TC-08 | `test_borrow_book` | Borrow an available book | ✅ PASS | `borrow_book_success.png` |
+| TC-09 | `test_view_borrowed_books` | View borrowed books list | ✅ PASS | `view_borrowed_books.png` |
+| TC-10 | `test_return_book` | Return a borrowed book | ✅ PASS | `return_book_success.png` |
+| TC-Bonus-B1c | `test_borrow_suspended_member` | Suspended member cannot borrow | ❌ FAIL | `borrow_suspended_member.png` |
+| TC-Bonus-B1d | `test_borrow_limit_exceeded` | Cannot borrow more than 3 books | ❌ FAIL | `borrow_limit_exceeded.png` |
+| TC-Bonus-B1e | `test_return_overdue_warning` | Overdue return triggers warning | ❌ FAIL | `return_overdue_warning.png` |
+| TC-Bonus-B1f | `test_return_other_member_book` | Member return another member's book | ❌ FAIL | `return_other_member_book.png` |
+| TC-Bonus-B1g | `test_unauthorized_slip_lookup` | Member lookup other member's slip | ❌ FAIL | `unauthorized_slip_lookup.png` |
+
+*Note: These Bonus test cases fail because they successfully detect **BUG-04**, **BUG-03**, **BUG-05**, **BUG-06**, and **BUG-12** respectively.*
 
 ---
 
-## 4. Bugs Detected during Automated Testing
+### Group 4: General Functions ([test_general.py](file:///home/hoang-vu/Documents/Usth/software_testing/stqa-automation-testing-stqa_group_05/tests/test_general.py))
 
-### 4.1. Core TC Bugs (TC-01~TC-12)
-
-| Bug ID | TC | Description |
-|--------|----|-------------|
-| **BUG-01** | TC-02 (B2) | Empty email + password filled → shows generic "Vui lòng nhập email và mật khẩu" instead of "Vui lòng nhập email" |
-| **BUG-02** | TC-02 (B2) | Email filled + password empty → shows generic message instead of "Vui lòng nhập mật khẩu" |
-
-> Note: BUG-01 and BUG-02 are detected by `test_login_fail_parametrized` (Bonus B2) which is data-driven but covers login scenarios.
-
-### 4.2. Bonus TC Bugs
-
-| Bug ID | TC (manual) | Test Function | Description |
-|--------|-------------|--------------|-------------|
-| **BUG-AUTO-01** | B1-Extra-Case | `test_search_case_insensitive` | Book search is case-sensitive — "FLUTTER" returns no results (violates REQ-03) |
-| **BUG-07** | TC-31 | `test_bonus_b1_add_member_valid` | Valid email `testnewuser99@gmail.com` rejected as "Email không hợp lệ" |
-| **BUG-08** | TC-32 | `test_bonus_b1_add_member_invalid_email` | Invalid email `new@gmail` (no domain extension) accepted and member created |
-| **BUG-09** | TC-33 | `test_bonus_b1_add_member_duplicate_email` | Duplicate email shows generic "Email không hợp lệ" instead of duplicate error |
-| **BUG-10** | TC-35 | `test_bonus_b1_add_member_empty_phone` | Empty phone shows "Email không hợp lệ" instead of phone validation error |
-| **BUG-11** | TC-36 | `test_bonus_b1_add_member_invalid_phone` | Invalid phone format shows "Email không hợp lệ" instead of phone format error |
-
-### 4.3. Bugs Verified in Manual Testing (not automated)
-
-Additional bugs found during manual testing (see manual testing report):
-
-| Bug ID | Feature | Description |
-|--------|---------|-------------|
-| **BUG-03** | Borrow limit | Member can borrow more than 3 books — limit not enforced |
-| **BUG-04** | Borrow (suspended) | Suspended account shows "hết hạn" (expired) error instead of "tạm ngưng" (suspended) |
-| **BUG-05** | Return overdue | Returning overdue book shows no warning/penalty notification |
-| **BUG-06** | Return (authorization) | Member can return another member's book |
-| **BUG-12** | Slip lookup | Member can look up another member's private borrow slip records |
+| TC | Test Function | Description | Result | Screenshot |
+|----|--------------|-------------|--------|------------|
+| TC-11 | `test_logout` | Logout success | ✅ PASS | `logout_success.png` |
+| TC-12 | `test_switch_language_to_english` | Switch language to English | ✅ PASS | `language_switched_to_english.png` |
 
 ---
 
-## 5. System Quality Assessment
+### Group 5: Member Management ([test_member_management.py](file:///home/hoang-vu/Documents/Usth/software_testing/stqa-automation-testing-stqa_group_05/tests/test_member_management.py))
 
-| Dimension | Rating | Justification |
-|-----------|--------|---------------|
-| **Functional Integrity** | ❌ LOW | Core constraints (borrow limit, member states) bypassed or incorrectly handled |
-| **Input Validation** | ❌ LOW | Email validation logic broken — accepts invalid, rejects valid |
-| **Usability & UX** | ⚠️ MEDIUM | Generic error messages make debugging impossible for librarians |
-| **Security & Authorization** | ❌ LOW | Members can view/act on other members' records |
-| **Real-time UI Updates** | ✅ HIGH | Book statuses update immediately without page reload |
-| **Flutter Web Handling** | ✅ HIGH | Smart Wait (`wait_for_flutter`) used consistently — no `time.sleep` |
+| TC | Test Function | Description | Result | Screenshot |
+|----|--------------|-------------|--------|------------|
+| TC-Bonus-B1h | `test_add_member_valid` | Librarian adds valid member | ❌ FAIL | `add_member_valid.png` |
+| TC-Bonus-B1i | `test_add_member_invalid_email`| Reject invalid email format | ❌ FAIL | `add_member_invalid_email.png` |
+| TC-Bonus-B1j | `test_add_member_duplicate_email`| Reject duplicate email | ❌ FAIL | `add_member_duplicate_email.png` |
+| TC-Bonus-B1k | `test_add_member_empty_phone` | Reject empty phone number | ❌ FAIL | `add_member_empty_phone.png` |
+| TC-Bonus-B1l | `test_add_member_invalid_phone`| Reject invalid phone format | ❌ FAIL | `add_member_invalid_phone.png` |
 
----
-
-## 6. Textbook Concepts Applied
-
-| Concept | Textbook Chapter | Application in This Repo |
-|---------|-----------------|--------------------------|
-| RIPR Model | Ch.2 | `[R]`, `[I]`, `[P]`, `[R✓]` comments in every test function |
-| Data-Driven Testing | Ch.3 §3.3.2 | `@parametrize` in `test_login_fail_parametrized` (Bonus B2) |
-| Test Oracle Strength | Ch.14 | Strong assertions checking specific text — not just URLs (Bonus B3) |
-| Test Doubles (Mock/Stub) | Ch.12 | System uses in-memory mock — data resets on page reload |
-| Flaky Test Prevention | Ch.4 §4.2 | `wait_for_flutter()` replaces `time.sleep()` throughout |
+*Note: These Bonus test cases fail because they successfully detect **BUG-07**, **BUG-08**, **BUG-09**, **BUG-10**, and **BUG-11** respectively.*
 
 ---
 
+## 3. Bugs Detected during Automated Testing
+
+The automated test suite has successfully detected and verified **12 system bugs** (the complete list of bugs from manual testing):
+
+### 3.1. Login Validation Bugs (REQ-01)
+
+#### BUG-01: Empty email validation warning is generic
+- **Detected by**: `test_login_fail_empty_email_only` (**FAIL**)
+- **Description**: When only the Email field is empty and Password is provided, the system displays the generic message `"Vui lòng nhập email và mật khẩu"` instead of an email-specific message.
+- **Evidence**: `login_fail_empty_email_only.png`
+
+#### BUG-02: Empty password validation warning is generic
+- **Detected by**: `test_login_fail_empty_password_only` (**FAIL**)
+- **Description**: When only the Password field is empty and Email is provided, the system displays the generic message `"Vui lòng nhập email và mật khẩu"` instead of a password-specific message.
+- **Evidence**: `login_fail_empty_password_only.png`
+
+---
+
+### 3.2. Borrow & Return Bugs (REQ-04, REQ-05, REQ-08)
+
+#### BUG-03: Borrowing limit of 3 books is not enforced
+- **Detected by**: `test_borrow_limit_exceeded` (**FAIL**)
+- **Description**: An active member is allowed to borrow a 4th book successfully. The limit of 3 books is ignored.
+- **Evidence**: `borrow_limit_exceeded.png`
+
+#### BUG-04: Suspended member borrows with incorrect error message
+- **Detected by**: `test_borrow_suspended_member` (**FAIL**)
+- **Description**: When a suspended member attempts to borrow a book, the system displays `"Tài khoản thành viên đã hết hạn..."` (Expired) instead of the correct Suspended warning message.
+- **Evidence**: `borrow_suspended_member.png`
+
+#### BUG-05: Overdue book return has no overdue warning notice
+- **Detected by**: `test_return_overdue_warning` (**FAIL**)
+- **Description**: Returning an overdue borrowing slip completes successfully but displays only `"Trả sách thành công."` without any warning or overdue status indicator.
+- **Evidence**: `return_overdue_warning.png`
+
+#### BUG-06: Member can return another member's book
+- **Detected by**: `test_return_other_member_book` (**FAIL**)
+- **Description**: A member can look up another member's ID and click the return button, successfully returning their borrowed book.
+- **Evidence**: `return_other_member_book.png`
+
+#### BUG-12: Member can view another's borrowing slip
+- **Detected by**: `test_unauthorized_slip_lookup` (**FAIL**)
+- **Description**: A member can enter another member's ID in the search box under "Tra cứu phiếu mượn" and view their active borrowing slips, violating authorization rules.
+- **Evidence**: `unauthorized_slip_lookup.png`
+
+---
+
+### 3.3. Member Management Bugs (REQ-07)
+
+#### BUG-07: Valid email format is rejected during member creation
+- **Detected by**: `test_add_member_valid` (**FAIL**)
+- **Description**: The librarian cannot add a member with a valid email (e.g. `testnewuser99@gmail.com`), getting `"Invalid email"` error.
+- **Evidence**: `add_member_valid.png`
+
+#### BUG-08: Invalid email format is accepted during member creation
+- **Detected by**: `test_add_member_invalid_email` (**FAIL**)
+- **Description**: The librarian can successfully create a member with an invalid email format such as `new@gmail` (missing domain extension).
+- **Evidence**: `add_member_invalid_email.png`
+
+#### BUG-09: Duplicate email registration reports the wrong error
+- **Detected by**: `test_add_member_duplicate_email` (**FAIL**)
+- **Description**: Trying to add a member with an already-existing email (e.g., `librarian@library.com`) displays `"Invalid email"` instead of a duplicate error warning.
+- **Evidence**: `add_member_duplicate_email.png`
+
+#### BUG-10: Empty phone number registration reports the wrong error
+- **Detected by**: `test_add_member_empty_phone` (**FAIL**)
+- **Description**: Leaving the phone number field empty during member creation displays `"Invalid email"` instead of a phone validation error.
+- **Evidence**: `add_member_empty_phone.png`
+
+#### BUG-11: Invalid phone number format registration reports the wrong error
+- **Detected by**: `test_add_member_invalid_phone` (**FAIL**)
+- **Description**: Entering an invalid phone format (containing characters like `09abcde345`) displays `"Invalid email"` instead of a phone format validation error.
+- **Evidence**: `add_member_invalid_phone.png`
+
+---
+
+## 4. Evaluation and System Quality Assessment
+
+The system is highly functional for standard transactional flows (successful login, book viewing, successful borrowing of available books, returning on time, logging out, switching language). 
+
+However, critical quality gaps exist in **validation logic, constraint enforcement, and access controls**:
+- **Access Control & Authorization**: High-risk security vulnerabilities allow members to look up other members' borrowing slips (BUG-12) and return books on behalf of other members (BUG-06).
+- **Constraint Enforcement**: The core business rule of limiting active loans to 3 books per member is not enforced (BUG-03).
+- **Data Validation & Error Messaging**: Email validation is broken (accepts invalid format, rejects valid format, short-circuits phone validations) (BUG-07 to BUG-11). Validation alerts are generic and do not guide the user properly (BUG-01, BUG-02, BUG-04).
+- **Overdue Handling**: No overdue warnings are shown upon returning overdue books (BUG-05).
+
+---
+
+## 5. Bonus Features Implemented
+
+| Bonus | Description | Implementation Details |
+|-------|-------------|------------------------|
+| **B1** | ≥3 extra test cases | ✅ Implemented 16 extra tests covering all 12 manual bugs. |
+| **B2** | Data-driven testing | ✅ Parameterized `test_login_fail_parametrized` with 3 failed login datasets (wrong password, empty fields, nonexistent email). |
+| **B3** | Detailed assertions | ✅ Assertions check specific Vietnamese/English text content, verify correct status transitions, and enforce strict error messages. |
+| **B4** | REPORT.md | ✅ Detailed execution report with descriptions, bug categorization, and quality assessment. |
+
+---
+
+## 6. AI Usage Declaration
+
+The team utilized AI (Gemini/ChatGPT) to assist in writing test scripts and analyzing Playwright selectors compatible with Flutter Web semantics tree:
+- AI helped identify the semantics selectors for the complex CanvasKit UI widgets.
+- AI assisted in structuring tests using the Arrange-Act-Assert format and the textbook **RIPR Model**.
+- AI aided in solving test flakiness by recommending Playwright's `wait_for` logic instead of hardcoded `time.sleep()`.
+
+---
 *This report was generated by STQA Group 05 — Semester 2 2025-2026*

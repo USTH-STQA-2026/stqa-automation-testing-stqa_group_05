@@ -189,3 +189,90 @@ def test_login_as_librarian(page, test_config):
         "('Thêm thành viên' or 'Đặt lại dữ liệu') — REQ-07"
     )
     assert "Đăng xuất" in sem_text, "Librarian login should succeed"
+
+
+# ---------------------------------------------------------------------------
+# BUG-01: Failed login — empty email only
+# ---------------------------------------------------------------------------
+
+def test_login_fail_empty_email_only(page, test_config):
+    """Bonus B1: Failed login — empty email only (BUG-01 / manual TC-06)
+
+    Textbook Concepts:
+      - RIPR Model (Ch.2):
+        [R] Reachability  → Navigate to the login page
+        [I] Infection     → Input password, leave email empty, click Login
+        [P] Propagation   → Error message propagation to UI
+        [R] Revealability → Verify the error displays specifically for email (BUG-01)
+      - Oracle Strength (Ch.14): Strong assertions on specific error text
+      - Regression Testing (Ch.13): Verifying system bugs
+
+    Bug Verification:
+      - BUG-01: Login form displays incorrect validation message when the email field is empty and the password field is filled.
+      - Expected: Show "Vui lòng nhập email" (or email-specific message)
+      - Actual (BUG-01): Shows generic "Vui lòng nhập email và mật khẩu"
+    """
+    page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
+    enable_flutter_semantics(page)
+
+    flutter_fill(page, "Mật khẩu", test_config["password"])
+    flutter_click_button(page, "Đăng nhập")
+
+    # Wait for any validation error containing "Vui lòng nhập"
+    wait_for_flutter(page, text="Vui lòng nhập")
+    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_fail_empty_email_only.png"))
+
+    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
+    # Assert specific requirement: error message must be specifically for email
+    assert "Vui lòng nhập email" in sem_text, (
+        f"Expected error message 'Vui lòng nhập email'. Got: {sem_text[:200]}"
+    )
+    # Ensure it doesn't request password as well when password was provided
+    assert "và mật khẩu" not in sem_text, (
+        "Should not show 'và mật khẩu' when password is already provided"
+    )
+    assert "Đăng xuất" not in sem_text, "User should not be logged in"
+
+
+# ---------------------------------------------------------------------------
+# BUG-02: Failed login — empty password only
+# ---------------------------------------------------------------------------
+
+def test_login_fail_empty_password_only(page, test_config):
+    """Bonus B1: Failed login — empty password only (BUG-02 / manual TC-07)
+
+    Textbook Concepts:
+      - RIPR Model (Ch.2):
+        [R] Reachability  → Navigate to the login page
+        [I] Infection     → Input email, leave password empty, click Login
+        [P] Propagation   → Error message propagation to UI
+        [R] Revealability → Verify the error displays specifically for password (BUG-02)
+      - Oracle Strength (Ch.14): Strong assertions on specific error text
+      - Regression Testing (Ch.13): Verifying system bugs
+
+    Bug Verification:
+      - BUG-02: Login form displays incorrect validation message when the password field is empty and the email field is filled.
+      - Expected: Show "Vui lòng nhập mật khẩu" (or password-specific message)
+      - Actual (BUG-02): Shows generic "Vui lòng nhập email và mật khẩu"
+    """
+    page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
+    enable_flutter_semantics(page)
+
+    flutter_fill(page, "Email", test_config["email"])
+    flutter_click_button(page, "Đăng nhập")
+
+    # Wait for any validation error containing "Vui lòng nhập"
+    wait_for_flutter(page, text="Vui lòng nhập")
+    page.screenshot(path=os.path.join(SCREENSHOT_DIR, "login_fail_empty_password_only.png"))
+
+    sem_text = " ".join(page.locator("flt-semantics").all_text_contents())
+    # Assert specific requirement: error message must be specifically for password
+    assert "Vui lòng nhập mật khẩu" in sem_text, (
+        f"Expected error message 'Vui lòng nhập mật khẩu'. Got: {sem_text[:200]}"
+    )
+    # Ensure it doesn't request email as well when email was provided
+    assert "email và" not in sem_text, (
+        "Should not show 'email và' when email is already provided"
+    )
+    assert "Đăng xuất" not in sem_text, "User should not be logged in"
+
