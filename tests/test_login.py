@@ -196,10 +196,21 @@ def test_login_as_librarian(page, test_config):
 # ---------------------------------------------------------------------------
 
 def test_login_fail_empty_email_only(page, test_config):
-    """TC-06: Failed login — empty email only
+    """Bonus B1: Failed login — empty email only (BUG-01 / manual TC-06)
 
-    Expect: System displays "Vui lòng nhập email" (or similar specific message).
-    Actual (BUG-01): System displays "Vui lòng nhập email và mật khẩu".
+    Textbook Concepts:
+      - RIPR Model (Ch.2):
+        [R] Reachability  → Navigate to the login page
+        [I] Infection     → Input password, leave email empty, click Login
+        [P] Propagation   → Error message propagation to UI
+        [R] Revealability → Verify the error displays specifically for email (BUG-01)
+      - Oracle Strength (Ch.14): Strong assertions on specific error text
+      - Regression Testing (Ch.13): Verifying system bugs
+
+    Bug Verification:
+      - BUG-01: Login form displays incorrect validation message when the email field is empty and the password field is filled.
+      - Expected: Show "Vui lòng nhập email" (or email-specific message)
+      - Actual (BUG-01): Shows generic "Vui lòng nhập email và mật khẩu"
     """
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
@@ -228,10 +239,21 @@ def test_login_fail_empty_email_only(page, test_config):
 # ---------------------------------------------------------------------------
 
 def test_login_fail_empty_password_only(page, test_config):
-    """TC-07: Failed login — empty password only
+    """Bonus B1: Failed login — empty password only (BUG-02 / manual TC-07)
 
-    Expect: System displays "Vui lòng nhập mật khẩu" (or similar specific message).
-    Actual (BUG-02): System displays "Vui lòng nhập email và mật khẩu".
+    Textbook Concepts:
+      - RIPR Model (Ch.2):
+        [R] Reachability  → Navigate to the login page
+        [I] Infection     → Input email, leave password empty, click Login
+        [P] Propagation   → Error message propagation to UI
+        [R] Revealability → Verify the error displays specifically for password (BUG-02)
+      - Oracle Strength (Ch.14): Strong assertions on specific error text
+      - Regression Testing (Ch.13): Verifying system bugs
+
+    Bug Verification:
+      - BUG-02: Login form displays incorrect validation message when the password field is empty and the email field is filled.
+      - Expected: Show "Vui lòng nhập mật khẩu" (or password-specific message)
+      - Actual (BUG-02): Shows generic "Vui lòng nhập email và mật khẩu"
     """
     page.goto(test_config["base_url"], wait_until="networkidle", timeout=60000)
     enable_flutter_semantics(page)
